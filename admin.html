@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Panel de Administración</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Bienvenido al Panel de Administración</h2>
+            <p>Desde aquí puedes gestionar usuarios, configuraciones y más.</p>
+            <ul>
+                <li><a href="register.html">Registrar Usuario</a></li>
+                <li><a href="index.html">Volver al Inicio</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Gestión de Usuarios</h2>
+            <table id="users-table" border="1">
+                <!-- Los usuarios se cargarán dinámicamente aquí -->
+            </table>
+        </section>
+        <section>
+            <h2>Generación de Reportes</h2>
+            <button id="generate-pdf">Generar Reporte en PDF</button>
+            <button id="generate-excel">Generar Reporte en Excel</button>
+        </section>
+        <section>
+            <h2>Detalles de Cotizaciones</h2>
+            <table id="cotizaciones-table" border="1">
+                <!-- Las cotizaciones se cargarán dinámicamente aquí -->
+            </table>
+        </section>
+        <section>
+            <h2>Gestión de Configuraciones</h2>
+            <form id="config-form">
+                <fieldset>
+                    <legend>Consecutivo de Cotizaciones</legend>
+                    <label for="consecutivo">Consecutivo Actual:</label>
+                    <input type="number" id="consecutivo" name="consecutivo" required>
+                    <button type="button" id="update-consecutivo">Actualizar</button>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Plazos de Financiamiento</legend>
+                    <label for="plazo">Nuevo Plazo (meses):</label>
+                    <input type="number" id="plazo" name="plazo" required>
+                    <button type="button" id="add-plazo">Agregar</button>
+                    <ul id="plazos-list"></ul>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tasas de Financiamiento</legend>
+                    <label for="tasa">Nueva Tasa (%):</label>
+                    <input type="number" step="0.01" id="tasa" name="tasa" required>
+                    <button type="button" id="add-tasa">Agregar</button>
+                    <ul id="tasas-list"></ul>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Bolsas de Horas</legend>
+                    <label for="bolsa">Nueva Bolsa (horas):</label>
+                    <input type="number" id="bolsa" name="bolsa" required>
+                    <button type="button" id="add-bolsa">Agregar</button>
+                    <ul id="bolsas-list"></ul>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Formas de Pago</legend>
+                    <label for="forma-pago">Nueva Forma de Pago:</label>
+                    <input type="text" id="forma-pago" name="forma-pago" required>
+                    <button type="button" id="add-forma-pago">Agregar</button>
+                    <ul id="formas-pago-list"></ul>
+                </fieldset>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Cyma IT</p>
+    </footer>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+
+        // Función para bloquear/desbloquear usuarios
+        async function toggleUserStatus(userId, isBlocked) {
+            try {
+                await db.collection('users').doc(userId).update({ blocked: !isBlocked });
+                alert(`El usuario ha sido ${!isBlocked ? 'bloqueado' : 'desbloqueado'} exitosamente.`);
+                loadUsers();
+            } catch (error) {
+                console.error('Error al cambiar el estado del usuario:', error);
+                alert('Hubo un error al cambiar el estado del usuario.');
+            }
+        }
+
+        // Función para cargar y mostrar usuarios
+        async function loadUsers() {
+            const usersTable = document.getElementById('users-table');
+            usersTable.innerHTML = '<tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>';
+
+            try {
+                const snapshot = await db.collection('users').get();
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.blocked ? 'Bloqueado' : 'Activo'}</td>
+                        <td>
+                            <button onclick="changeRole('${doc.id}', '${user.role}')">Cambiar Rol</button>
+                            <button onclick="toggleUserStatus('${doc.id}', ${user.blocked})">${user.blocked ? 'Desbloquear' : 'Bloquear'}</button>
+                            <button onclick="deleteUser('${doc.id}')">Eliminar</button>
+                        </td>
+                    `;
+
+                    usersTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error al cargar usuarios:', error);
+                alert('Hubo un error al cargar los usuarios.');
+            }
+        }
+
+        // Función para cambiar el rol de un usuario
+        async function changeRole(userId, currentRole) {
+            const newRole = currentRole === 'admin' ? 'user' : 'admin';
+            try {
+                await db.collection('users').doc(userId).update({ role: newRole });
+                alert('Rol actualizado exitosamente.');
+                loadUsers();
+            } catch (error) {
+                console.error('Error al cambiar el rol:', error);
+                alert('Hubo un error al cambiar el rol.');
+            }
+        }
+
+        // Función para eliminar un usuario
+        async function deleteUser(userId) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) return;
+
+            try {
+                await db.collection('users').doc(userId).delete();
+                alert('Usuario eliminado exitosamente.');
+                loadUsers();
+            } catch (error) {
+                console.error('Error al eliminar usuario:', error);
+                alert('Hubo un error al eliminar el usuario.');
+            }
+        }
+
+        // Cargar usuarios al cargar la página
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import jsPDF from 'jspdf';
+        import 'jspdf-autotable';
+
+        // Función para generar un reporte en PDF
+        async function generatePDFReport() {
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text('Reporte de Cotizaciones', 105, 20, null, null, 'center');
+
+            const headers = ['Usuario', 'Fecha', 'Detalle', 'Total'];
+            const rows = [];
+
+            try {
+                const snapshot = await db.collection('cotizaciones').get();
+                snapshot.forEach(doc => {
+                    const cotizacion = doc.data();
+                    rows.push([
+                        cotizacion.username || 'N/A',
+                        cotizacion.date || 'N/A',
+                        cotizacion.detail || 'N/A',
+                        `$${cotizacion.total || 0}`
+                    ]);
+                });
+
+                doc.autoTable({
+                    head: [headers],
+                    body: rows,
+                    startY: 30
+                });
+
+                doc.save('reporte-cotizaciones.pdf');
+            } catch (error) {
+                console.error('Error al generar el reporte:', error);
+                alert('Hubo un error al generar el reporte.');
+            }
+        }
+
+        // Función para generar un reporte en Excel
+        async function generateExcelReport() {
+            const rows = [];
+
+            try {
+                const snapshot = await db.collection('cotizaciones').get();
+                snapshot.forEach(doc => {
+                    const cotizacion = doc.data();
+                    rows.push({
+                        Usuario: cotizacion.username || 'N/A',
+                        Fecha: cotizacion.date || 'N/A',
+                        Detalle: cotizacion.detail || 'N/A',
+                        Total: cotizacion.total || 0
+                    });
+                });
+
+                const csvContent = [
+                    Object.keys(rows[0]).join(','),
+                    ...rows.map(row => Object.values(row).join(','))
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'reporte-cotizaciones.csv';
+                link.click();
+            } catch (error) {
+                console.error('Error al generar el reporte:', error);
+                alert('Hubo un error al generar el reporte.');
+            }
+        }
+
+        // Agregar botones para generar reportes
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportSection = document.createElement('section');
+            reportSection.innerHTML = `
+                <h2>Generación de Reportes</h2>
+                <button id="generate-pdf">Generar Reporte en PDF</button>
+                <button id="generate-excel">Generar Reporte en Excel</button>
+            `;
+            document.body.appendChild(reportSection);
+
+            document.getElementById('generate-pdf').addEventListener('click', generatePDFReport);
+            document.getElementById('generate-excel').addEventListener('click', generateExcelReport);
+        });
+    </script>
+    <script type="module">
+        import { db } from './firebase-config.js';
+
+        // Función para cargar y mostrar detalles de cotizaciones
+        async function loadCotizaciones() {
+            const cotizacionesTable = document.getElementById('cotizaciones-table');
+            cotizacionesTable.innerHTML = '<tr><th>Usuario</th><th>Fecha</th><th>Detalle</th><th>Total</th><th>Acciones</th></tr>';
+
+            try {
+                const snapshot = await db.collection('cotizaciones').get();
+                snapshot.forEach(doc => {
+                    const cotizacion = doc.data();
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${cotizacion.username || 'N/A'}</td>
+                        <td>${cotizacion.date || 'N/A'}</td>
+                        <td>${cotizacion.detail || 'N/A'}</td>
+                        <td>$${cotizacion.total || 0}</td>
+                        <td>
+                            <button onclick="viewCotizacion('${doc.id}')">Ver Detalle</button>
+                        </td>
+                    `;
+
+                    cotizacionesTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error al cargar cotizaciones:', error);
+                alert('Hubo un error al cargar las cotizaciones.');
+            }
+        }
+
+        // Función para ver el detalle de una cotización
+        async function viewCotizacion(cotizacionId) {
+            try {
+                const doc = await db.collection('cotizaciones').doc(cotizacionId).get();
+                if (!doc.exists) {
+                    alert('La cotización no existe.');
+                    return;
+                }
+
+                const cotizacion = doc.data();
+                alert(`Detalle de la Cotización:\n\nUsuario: ${cotizacion.username || 'N/A'}\nFecha: ${cotizacion.date || 'N/A'}\nDetalle: ${cotizacion.detail || 'N/A'}\nTotal: $${cotizacion.total || 0}`);
+            } catch (error) {
+                console.error('Error al ver el detalle de la cotización:', error);
+                alert('Hubo un error al cargar el detalle de la cotización.');
+            }
+        }
+
+        // Cargar cotizaciones al cargar la página
+        document.addEventListener('DOMContentLoaded', loadCotizaciones);
+    </script>
+    <script type="module">
+        import { db } from './firebase-config.js';
+
+        // Función para cargar configuraciones iniciales
+        async function loadConfigurations() {
+            try {
+                const configDoc = await db.collection('configurations').doc('settings').get();
+                if (configDoc.exists) {
+                    const config = configDoc.data();
+                    document.getElementById('consecutivo').value = config.consecutivo || 0;
+                    updateList('plazos-list', config.plazos || []);
+                    updateList('tasas-list', config.tasas || []);
+                    updateList('bolsas-list', config.bolsas || []);
+                    updateList('formas-pago-list', config.formasPago || []);
+                }
+            } catch (error) {
+                console.error('Error al cargar configuraciones:', error);
+            }
+        }
+
+        // Función para actualizar listas dinámicas
+        function updateList(listId, items) {
+            const list = document.getElementById(listId);
+            list.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                list.appendChild(li);
+            });
+        }
+
+        // Actualizar consecutivo
+        document.getElementById('update-consecutivo').addEventListener('click', async () => {
+            const consecutivo = parseInt(document.getElementById('consecutivo').value, 10);
+            try {
+                await db.collection('configurations').doc('settings').set({ consecutivo }, { merge: true });
+                alert('Consecutivo actualizado exitosamente.');
+            } catch (error) {
+                console.error('Error al actualizar consecutivo:', error);
+            }
+        });
+
+        // Agregar elementos a las listas
+        async function addItem(listId, inputId, field) {
+            const value = document.getElementById(inputId).value;
+            if (!value) return;
+
+            try {
+                const configDoc = await db.collection('configurations').doc('settings').get();
+                const config = configDoc.exists ? configDoc.data() : {};
+                const items = config[field] || [];
+                items.push(value);
+                await db.collection('configurations').doc('settings').set({ [field]: items }, { merge: true });
+                updateList(listId, items);
+                alert('Elemento agregado exitosamente.');
+            } catch (error) {
+                console.error(`Error al agregar ${field}:`, error);
+            }
+        }
+
+        // Eventos para agregar elementos
+        ['plazo', 'tasa', 'bolsa', 'forma-pago'].forEach((id, index) => {
+            const listId = ['plazos-list', 'tasas-list', 'bolsas-list', 'formas-pago-list'][index];
+            const field = ['plazos', 'tasas', 'bolsas', 'formasPago'][index];
+            document.getElementById(`add-${id}`).addEventListener('click', () => addItem(listId, id, field));
+        });
+
+        // Cargar configuraciones al cargar la página
+        document.addEventListener('DOMContentLoaded', loadConfigurations);
+    </script>
+</body>
+</html>
