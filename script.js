@@ -1,3 +1,6 @@
+// Importar auth y db desde firebase-config.js
+import { auth, db } from './firebase-config.js';
+
 // Seleccionar el botón "Calcular"
 const calculateButton = document.getElementById('calculate');
 
@@ -170,4 +173,9 @@ async function changePassword() {
 }
 
 // Agregar evento al botón de cambio de contraseña
-document.getElementById('change-password').addEventListener('click', changePassword);
+const changePasswordButton = document.getElementById('change-password');
+if (changePasswordButton) {
+    changePasswordButton.addEventListener('click', changePassword);
+} else {
+    console.warn('El botón de cambio de contraseña no está presente en el DOM.');
+}

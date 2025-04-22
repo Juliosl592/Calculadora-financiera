@@ -1,0 +1,43 @@
+Pasos para actualizar aplicación: Calculadora financiera:
+
+Archivo local del proyecto: c:\Users\licen\Downloads\calculadora-financiera (1).
+
+Hacer cambios con: Visual Studio Code
+
+
+---------------------------------------------------------------
+
+Subir los Cambios a GitHub
+
+1. Abrir la Terminal: Windows + R
+Navega a la carpeta de tu proyecto:
+cd "c:\Users\licen\Downloads\calculadora-financiera (1)"
+
+2. Agregar los Cambios:
+Agrega los archivos modificados al repositorio:
+git add .
+
+3. Realizar un Commit:
+Guarda los cambios con un mensaje descriptivo:
+git commit -m "Descripción de los cambios realizados"
+
+4. Subir los Cambios a GitHub:
+Sube los cambios al repositorio remoto:
+git push origin main
+---------------------------------------------------------------
+Despliegue Automático en Vercel
+
+Vercel detectará automáticamente los cambios en tu repositorio de GitHub y desplegará la nueva versión de tu proyecto.
+
+Recibirás una notificación en el panel de Vercel cuando el despliegue esté completo.
+
+Verificar el Despliegue:
+Abre la URL de tu proyecto en Vercel (por ejemplo, https://calculadora-financiera.vercel.app) para verificar que los cambios se hayan aplicado correctamente.
+----------------------------------------------------------------
+Notas Adicionales
+
+Rollback (Revertir Cambios):
+Si algo no funciona como esperabas, puedes revertir los cambios en GitHub y Vercel desplegará automáticamente la versión anterior.
+
+Variables de Entorno:
+Si necesitas agregar o modificar claves de Firebase u otras configuraciones, hazlo en el panel de Vercel en "Settings" > "Environment Variables".
