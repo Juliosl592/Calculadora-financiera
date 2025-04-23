@@ -65,7 +65,25 @@
   <script src="pdf-export.js"></script>
 
   <!-- ✅ Tu script de lógica/calculadora -->
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
+
+  <!-- ✅ Scripts de Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script type="module" src="firebase-config.js"></script>
+
+  <script type="module">
+    import { auth } from './firebase-config.js';
+
+    // Verificar si el usuario está autenticado
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Redirigir al inicio de sesión si no está autenticado
+            window.location.href = 'login.html';
+        }
+    });
+  </script>
 </body>
 </html>
 

@@ -141,7 +141,7 @@ async function saveCotizacion(cotizacion) {
             date: new Date().toISOString()
         });
 
-        alert('Cotización guardada exitosamente.');
+        //alert('Cotización guardada exitosamente.');
     } catch (error) {
         console.error('Error al guardar la cotización:', error);
         alert('Hubo un error al guardar la cotización. Por favor, inténtalo de nuevo.');
@@ -172,7 +172,7 @@ async function changePassword() {
     }
 }
 
-// Agregar evento al botón de cambio de contraseña
+// Validar que el elemento exista antes de agregar el evento
 const changePasswordButton = document.getElementById('change-password');
 if (changePasswordButton) {
     changePasswordButton.addEventListener('click', changePassword);
