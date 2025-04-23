@@ -13,7 +13,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 // Instrucciones para agregar dominios autorizados en Firebase
-console.warn('Asegúrate de agregar los dominios 127.0.0.1 y localhost en la consola de Firebase: Authentication > Settings > Authorized domains.');
+//console.warn('Asegúrate de agregar los dominios 127.0.0.1 y localhost en la consola de Firebase: Authentication > Settings > Authorized domains.');
 
 // Actualizar las reglas de Firestore para desarrollo
 console.warn('Asegúrate de actualizar las reglas de Firestore en la consola de Firebase:');
