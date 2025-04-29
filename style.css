@@ -192,3 +192,14 @@ button#logout:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
     display: none; /* Oculto por defecto */
 }
+
+body.hidden {
+    visibility: hidden; /* Oculta el contenido */
+    opacity: 0; /* Hace que el contenido sea invisible */
+    transition: opacity 0.3s ease; /* Transición suave al mostrar */
+}
+
+body.visible {
+    visibility: visible; /* Muestra el contenido */
+    opacity: 1; /* Hace que el contenido sea visible */
+}

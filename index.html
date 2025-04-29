@@ -64,14 +64,12 @@
         }
     </style>
 </head>
-<body>
+<body class="hidden">
     <header>
         <h1>Gestor de Licencias</h1>
         <div class="header-buttons">
             <button id="logout">Cerrar Sesión</button>
-            <!-- El botón de cambiar contraseña será ocultado dinámicamente para usuarios no administradores -->
-            <button id="change-password">Cambiar Contraseña</button>
-            <button id="back">Atrás</button>
+            <!--button id="back">Atrás</button-->
         </div>
     </header>
     <div class="container">
@@ -118,17 +116,6 @@
         <button id="export" type="button">Exportar a PDF</button>
     </div>
 
-    <!-- Modal para cambiar contraseña -->
-    <div id="password-modal" class="modal">
-        <h2>Cambiar Contraseña</h2>
-        <label for="new-password">Nueva Contraseña:</label>
-        <input type="password" id="new-password" placeholder="Ingresa tu nueva contraseña" required>
-        <div class="modal-buttons">
-            <button id="save-password">Guardar</button>
-            <button id="cancel-password">Cancelar</button>
-        </div>
-    </div>
-
     <!-- Contenedor para mensajes emergentes -->
     <div id="notification" class="notification"></div>
 
@@ -149,22 +136,18 @@
         import { auth } from './firebase-config.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
-        // Ocultar los botones de cambiar contraseña y atrás para usuarios no administradores
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const isAdmin = user.email === 'admin@cymait.com'; // Cambia esta lógica según tu implementación
-                const changePasswordButton = document.getElementById('change-password');
-                const backButton = document.getElementById('back');
-
-                if (!isAdmin) {
-                    if (changePasswordButton) {
-                        changePasswordButton.style.display = 'none'; // Ocultar el botón de cambiar contraseña
-                    }
-                    if (backButton) {
-                        backButton.style.display = 'none'; // Ocultar el botón de atrás
-                    }
+        // Ocultar el contenido hasta que se determine el estado del usuario
+        document.addEventListener('DOMContentLoaded', () => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // Si el usuario está autenticado, muestra el contenido
+                    document.body.classList.remove('hidden');
+                    document.body.classList.add('visible');
+                } else {
+                    // Redirige al login si no está autenticado
+                    window.location.href = 'login.html';
                 }
-            }
+            });
         });
     </script>
     <script type="module">
