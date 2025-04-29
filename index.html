@@ -3,75 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Financiera</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Gestor de Licencias</title>
+    <link rel="stylesheet" href="style.css"> <!-- Estilos generales -->
+    <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+    <style>
+        /* Estilos para el modal */
+        .modal { 
+            position: fixed;/* Fijo en la pantalla */
+            top: 50%; /* Centrado verticalmente */
+            left: 50%; /* Centrado horizontalmente */
+            transform: translate(-50%, -50%); /* Ajuste para centrar */
+            background-color: #fff; /* Fondo blanco */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+            width: 300px; /* Ancho del modal */
+            padding: 20px; /* Espaciado interno */	
+            z-index: 1000; /* Asegura que el modal esté por encima de otros elementos */
+            display: none; /* Oculto por defecto */
+        }
+
+        .modal h2 { /* Título del modal */
+            margin-top: 0;
+            color: #007bff; /* Azul Cyma IT */
+        }
+
+        .modal label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-buttons #save-password {
+            background-color: #007bff; /* Azul Cyma IT */
+            color: #fff;
+        }
+
+        .modal-buttons #cancel-password {
+            background-color: #dc3545; /* Rojo */
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Calculadora Financiera</h1>
+        <h1>Gestor de Licencias</h1>
         <div class="header-buttons">
             <button id="logout">Cerrar Sesión</button>
+            <!-- El botón de cambiar contraseña será ocultado dinámicamente para usuarios no administradores -->
             <button id="change-password">Cambiar Contraseña</button>
+            <button id="back">Atrás</button>
         </div>
     </header>
-    <main class="container">
-        <form id="calc-form" class="form-style">
-            <div class="form-group">
-                <label for="licenses">Cantidad de licencias:</label>
-                <input type="number" id="licenses" required placeholder="Ej: 1000" min="1" />
-            </div>
+    <div class="container">
+        <form id="calc-form"> <!-- Formulario para la calculadora -->
+            <label for="licenses">Cantidad de licencias:</label>
+            <input type="number" id="licenses" required placeholder="Ej: 1000" min="1">
 
-            <div class="form-group">
-                <label for="precio-unitario">Precio Unitario (USD):</label> 
-                <input type="number" id="precio-unitario" name="precio-unitario" step="0.01" min="0" required placeholder="Ej: 4.6">
-            </div>
+            <label for="precio-unitario">Precio Unitario (USD):</label>
+            <input type="number" id="precio-unitario" name="precio-unitario" step="0.01" min="0" required placeholder="Ej: 4.6">
 
-            <div class="form-group">
-                <label for="paymentPlanLicenses">Forma de pago - Licencias:</label>
-                <select id="paymentPlanLicenses">
-                    <option value="0">- Seleccione -</option>
-                    <option value="0">Contado</option>
-                    <option value="12">12 meses - 1.5% EA</option>
-                    <option value="24">24 meses - 1.8% EA</option>
-                    <option value="36">36 meses - 2.1% EA</option>
-                    <option value="48">48 meses - 2.6% EA</option>
-                </select>
-            </div>
+            <label for="paymentPlanLicenses">Forma de pago - Licencias:</label>
+            <select id="paymentPlanLicenses">
+                <option value="0">- Seleccione -</option>
+                <option value="0">Contado</option>
+                <option value="12">12 meses - 1.5% EA</option>
+                <option value="24">24 meses - 1.8% EA</option>
+                <option value="36">36 meses - 2.1% EA</option>
+                <option value="48">48 meses - 2.6% EA</option>
+            </select>
 
-            <div class="form-group">
-                <label for="hoursPackage">Selecciona una bolsa de horas:</label>
-                <select id="hoursPackage">
-                    <option value="0">- Seleccione -</option>
-                    <option value="200">30 horas - $200 USD</option>
-                    <option value="300">50 horas - $300 USD</option>
-                    <option value="400">80 horas - $400 USD</option>
-                    <option value="500">Implementación completa - $500 USD</option>
-                </select>
-            </div>
-           
-            <div class="form-group">
-                <label for="paymentPlanHours">Forma de pago - Bolsas:</label>
-                <select id="paymentPlanHours">
-                    <option value="0">- Seleccione -</option>
-                    <option value="0">Contado</option>
-                    <option value="12">12 meses - 1.5% EA</option>
-                    <option value="24">24 meses - 1.8% EA</option>
-                    <option value="36">36 meses - 2.1% EA</option>
-                    <option value="48">48 meses - 2.6% EA</option>
-                </select>
-            </div>
+            <label for="hoursPackage">Selecciona una bolsa de horas:</label>
+            <select id="hoursPackage">
+                <option value="0">- Seleccione -</option>
+                <option value="200">30 horas - $200 USD</option>
+                <option value="300">50 horas - $300 USD</option>
+                <option value="400">80 horas - $400 USD</option>
+                <option value="500">Implementación completa - $500 USD</option>
+            </select>
 
-            <div class="form-buttons">
-                <button id="calculate" type="button">Calcular</button>
-                <button id="clear-form" type="button">Limpiar Formulario</button>
-            </div>
+            <label for="paymentPlanHours">Forma de pago - Bolsas:</label>
+            <select id="paymentPlanHours">
+                <option value="0">- Seleccione -</option>
+                <option value="0">Contado</option>
+                <option value="12">12 meses - 1.5% EA</option>
+                <option value="24">24 meses - 1.8% EA</option>
+                <option value="36">36 meses - 2.1% EA</option>
+                <option value="48">48 meses - 2.6% EA</option>
+            </select>
+
+            <button type="button" id="calculate">Calcular</button>
+            <button type="button" id="clear-form">Reiniciar</button>
         </form>
-        <div id="result" class="result-style" style="display: none;"></div>
-    </main>
-    <footer>
-        <p>&copy; 2025 Cyma IT</p>
-    </footer>
+        <div id="result"></div>
+        <button id="export" type="button">Exportar a PDF</button>
+    </div>
+
+    <!-- Modal para cambiar contraseña -->
+    <div id="password-modal" class="modal">
+        <h2>Cambiar Contraseña</h2>
+        <label for="new-password">Nueva Contraseña:</label>
+        <input type="password" id="new-password" placeholder="Ingresa tu nueva contraseña" required>
+        <div class="modal-buttons">
+            <button id="save-password">Guardar</button>
+            <button id="cancel-password">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Contenedor para mensajes emergentes -->
+    <div id="notification" class="notification"></div>
+
+<footer>
+    <p>&copy; 2025 Cyma IT</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+    </script>
+    <script src="pdf-export.js"></script>
     <script type="module" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        // Ocultar los botones de cambiar contraseña y atrás para usuarios no administradores
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const isAdmin = user.email === 'admin@cymait.com'; // Cambia esta lógica según tu implementación
+                const changePasswordButton = document.getElementById('change-password');
+                const backButton = document.getElementById('back');
+
+                if (!isAdmin) {
+                    if (changePasswordButton) {
+                        changePasswordButton.style.display = 'none'; // Ocultar el botón de cambiar contraseña
+                    }
+                    if (backButton) {
+                        backButton.style.display = 'none'; // Ocultar el botón de atrás
+                    }
+                }
+            }
+        });
+    </script>
+    <script type="module">
+        import { configureLogoutButton } from './script.js';
+
+        // Configurar el botón de cierre de sesión
+        configureLogoutButton();
+    </script>
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        const backButton = document.getElementById('back');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                onAuthStateChanged(auth, (user) => {
+                    if (user && user.email === 'admin@cymait.com') {
+                        window.location.href = 'admin.html'; // Redirigir al panel de administración
+                    } else {
+                        window.history.back(); // Regresar a la página anterior
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
-
