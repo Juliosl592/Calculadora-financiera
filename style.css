@@ -1,31 +1,194 @@
+/* Variables de colores basados en el logo de Cyma IT */
+:root {
+    --primary-color: #0056b3; /* Azul corporativo */
+    --secondary-color: #00a859; /* Verde corporativo */
+    --background-color: white; /* Fondo claro */
+    --text-color: #333333; /* Texto oscuro */
+    --button-hover-color: #004494; /* Azul más oscuro */
+    --border-color: #cccccc; /* Bordes suaves */
+}
 
-body {
-  font-family: Arial, sans-serif;
-  background: #bbc4e0;
-  margin: 0;
-  padding: 20px;
+.logo-cyma {
+    position: absolute; /* Posición absoluta */
+    border-top-width: 5px; /* Desplazamiento hacia abajo */
+    left: 15%; /* Desplazamiento hacia la izquierda */
+    transform: translate(-50%, 0); /* Centrado */
+    width: 280px; /* Ancho de la imagen */
+    display: block; /* Hace que se comporte como un bloque para centrarlo */
+    margin: 0 auto 20px auto; /* 20px de espacio abajo, centrado a los lados */
+    border-radius: 8px; /* Bordes redondeados */
+    }
+
+
+/* Estilo general */
+body { 
+    font-family: 'Arial', sans-serif; /* Fuente sans-serif */
+    background-color: var(--background-color); /* Fondo blanco */
+    color: var(--text-color); /* Texto oscuro */
+    margin: 0; /* Sin margen */
+    padding: 0; /* Sin relleno */
 }
-.container {
-  max-width: 600px;
-  background: #165eac;
-  padding: 40px;
-  margin: auto;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+header { /* Encabezado */
+    background-color: var(--primary-color); /* Azul corporativo */
+    color: white; /* Texto blanco */
+    padding: 1rem; /* Espaciado interno */
+    text-align: center; /* Centrado */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    max-width: 800px; /* Ancho máximo del encabezado */
+    margin: 0 auto; /* Centrado automático */
+    border-radius: 8px; /* Bordes redondeados */
+    position: relative; /* Posición relativa para el pseudo-elemento */
+    z-index: 1; /* Asegura que el encabezado esté por encima del contenedor */
+    top: 20px; /* Desplazamiento hacia abajo */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
-label, input, select, button {
-  display: block;
-  width: 100%;
-  margin-bottom: 15px;
+
+h1, h2 { /* Encabezados */
+    margin: 0; /* Sin margen */
+    font-weight: 600; /* Peso de fuente */
 }
-button {
-  background-color: #062363;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
+
+.container {  /* Contenedor principal */
+    max-width: 770px; /* Ancho máximo del contenedor */
+    margin: 2rem auto; /* Centrado automático */
+    padding: 2rem; /* Espaciado interno */
+    background-color: #e1e2e9; /* Fondo blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    position: relative; /* Posición relativa para el pseudo-elemento */
+    }
+form { /* Formulario */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
-#result {
-  margin-top: 20px;
-  font-weight: bold;
+
+label { /* Etiquetas */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+input, select, button { /* Campos de entrada, selección y botón */
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    outline: none;
+}
+
+input:focus, select:focus { /* Campos de entrada y selección al enfocar */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 4px rgba(0, 86, 179, 0.5);
+}
+
+button { /* Botón */
+    background-color: var(--primary-color); /* Azul corporativo */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: background-color 0.3s ease; /* Transición suave */
+    width: 50%; /* Botón ocupa todo el ancho */
+    margin: 0 auto; /* Centra el botón */
+}
+
+button:hover { /* Cambia el color de fondo al pasar el ratón */
+    background-color: var(--button-hover-color); /* Azul más oscuro */
+}
+
+/* Centrar el botón de exportar a PDF */
+button#export {
+    display: block;
+    margin: 1rem auto; /* Centrar horizontalmente */
+}
+
+button#export:hover { /* Cambia el color de fondo al pasar el ratón */
+    background-color: #008c4a; /* Verde más oscuro */
+}
+
+#result { /* Resultado de la conversión */
+    margin-top: 1.5rem; /* Espacio superior */
+    padding: 1rem; /* Espaciado interno */
+    background-color: var(--background-color); /* Fondo blanco */
+    border: 1px solid var(--border-color); /* Borde suave */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 1.1rem; /* Tamaño de fuente */
+    font-weight: bold; /* Negrita */
+    color: var(--text-color); /* Texto oscuro */
+    text-align: center; /* Centrar texto */
+    
+}
+
+#result:empty {
+    display: none;
+}
+
+footer { 
+    background-color: var(--primary-color); /* Azul corporativo */
+    color: white; /* Texto blanco */
+    text-align: center; /* Centrado */
+    padding: 1rem; /* Espaciado interno */
+    margin-top: 2rem; /* Espacio superior */
+    width: 100%; /* Ocupa toda la pantalla horizontalmente */
+    position: fixed; /* Fijo en la parte inferior */
+    bottom: 0; /* Alineado al fondo */
+    left: 0; /* Alineado al borde izquierdo */
+    height: 3vh; /* Altura automática */
+    display: flex;
+    align-items: center; /* Alinea verticalmente el contenido al centro */
+    justify-content: center; /* Alinea horizontalmente el contenido al centro */
+    font-size: 1rem; /* Tamaño de fuente consistente para todos los footers */
+}
+
+/* Estilo del botón de cierre de sesión */
+button#logout {
+    background-color: var(--primary-color); /* Azul corporativo */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    padding: 0.8rem 1.5rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    border-radius: 4px; /* Bordes redondeados */
+    transition: background-color 0.3s ease; /* Transición suave */
+    width: 20%; /* Botón ocupa todo el ancho */
+}
+
+button#logout:hover {
+    background-color: var(--button-hover-color); /* Azul más oscuro al pasar el ratón */
+}
+
+.warning-box {
+    position: fixed; /* Superpone el mensaje sobre la interfaz */
+    top: 50%; /* Centrado vertical */
+    left: 50%; /* Centrado horizontal */
+    transform: translate(-50%, -50%); /* Ajuste para centrar completamente */
+    background-color: #ffcccb; /* Fondo rojo claro para advertencias */
+    color: #a94442; /* Texto rojo oscuro */
+    border: 1px solid #a94442; /* Borde rojo oscuro */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
+    text-align: center; /* Centrar texto */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    display: none; /* Oculto por defecto */
+}
+
+.notification-box {
+    position: fixed; /* Superpone el mensaje sobre la interfaz */
+    top: 50%; /* Centrado vertical */
+    left: 50%; /* Centrado horizontal */
+    transform: translate(-50%, -50%); /* Ajuste para centrar completamente */
+    background-color: #d9edf7; /* Fondo azul claro para notificaciones */
+    color: #31708f; /* Texto azul oscuro */
+    border: 1px solid #31708f; /* Borde azul oscuro */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
+    text-align: center; /* Centrar texto */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    display: none; /* Oculto por defecto */
 }

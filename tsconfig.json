@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "./src/**/*.ts" // Incluye todos los archivos .ts en la carpeta src
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

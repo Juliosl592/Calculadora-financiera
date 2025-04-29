@@ -1,89 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora Financiera</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="Logo Cyma IT.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Financiera</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Calculadora Financiera</h1>
-    <form id="calc-form">
-      <!-- Campos del formulario -->
-      <label for="licenses">Cantidad de licencias:</label>
-      <input type="number" id="licenses" required placeholder="Ej: 1000" min="1" />
+    <header>
+        <h1>Calculadora Financiera</h1>
+        <div class="header-buttons">
+            <button id="logout">Cerrar Sesión</button>
+            <button id="change-password">Cambiar Contraseña</button>
+        </div>
+    </header>
+    <main class="container">
+        <form id="calc-form" class="form-style">
+            <div class="form-group">
+                <label for="licenses">Cantidad de licencias:</label>
+                <input type="number" id="licenses" required placeholder="Ej: 1000" min="1" />
+            </div>
 
-      <label for="precio-unitario">Precio Unitario (USD):</label> 
-      <input type="number" id="precio-unitario" name="precio-unitario" step="0.01" min="0" required placeholder="Ej: 4.6">
+            <div class="form-group">
+                <label for="precio-unitario">Precio Unitario (USD):</label> 
+                <input type="number" id="precio-unitario" name="precio-unitario" step="0.01" min="0" required placeholder="Ej: 4.6">
+            </div>
 
-      <label for="paymentPlanLicenses">Forma de pago - Licencias:</label>
-      <select id="paymentPlanLicenses">
-        <option value="0">- Seleccione -</option>
-        <option value="0">Contado</option>
-        <option value="12">12 meses - 1.5% EA</option>
-        <option value="24">24 meses - 1.8% EA</option>
-        <option value="36">36 meses - 2.1% EA</option>
-        <option value="48">48 meses - 2.6% EA</option>
-      </select>
+            <div class="form-group">
+                <label for="paymentPlanLicenses">Forma de pago - Licencias:</label>
+                <select id="paymentPlanLicenses">
+                    <option value="0">- Seleccione -</option>
+                    <option value="0">Contado</option>
+                    <option value="12">12 meses - 1.5% EA</option>
+                    <option value="24">24 meses - 1.8% EA</option>
+                    <option value="36">36 meses - 2.1% EA</option>
+                    <option value="48">48 meses - 2.6% EA</option>
+                </select>
+            </div>
 
-      <label for="hoursPackage">Selecciona una bolsa de horas:</label>
-      <select id="hoursPackage">
-        <option value="0">- Seleccione -</option>
-        <option value="200">30 horas - $200 USD</option>
-        <option value="300">50 horas - $300 USD</option>
-        <option value="400">80 horas - $400 USD</option>
-        <option value="500">Implementación completa - $500 USD</option>
-      </select>
-     
-      <label for="paymentPlanHours">Forma de pago - Bolsas:</label>
-      <select id="paymentPlanHours">
-        <option value="0">- Seleccione -</option>
-        <option value="0">Contado</option>
-        <option value="12">12 meses - 1.5% EA</option>
-        <option value="24">24 meses - 1.8% EA</option>
-        <option value="36">36 meses - 2.1% EA</option>
-        <option value="48">48 meses - 2.6% EA</option>
-      </select>
+            <div class="form-group">
+                <label for="hoursPackage">Selecciona una bolsa de horas:</label>
+                <select id="hoursPackage">
+                    <option value="0">- Seleccione -</option>
+                    <option value="200">30 horas - $200 USD</option>
+                    <option value="300">50 horas - $300 USD</option>
+                    <option value="400">80 horas - $400 USD</option>
+                    <option value="500">Implementación completa - $500 USD</option>
+                </select>
+            </div>
+           
+            <div class="form-group">
+                <label for="paymentPlanHours">Forma de pago - Bolsas:</label>
+                <select id="paymentPlanHours">
+                    <option value="0">- Seleccione -</option>
+                    <option value="0">Contado</option>
+                    <option value="12">12 meses - 1.5% EA</option>
+                    <option value="24">24 meses - 1.8% EA</option>
+                    <option value="36">36 meses - 2.1% EA</option>
+                    <option value="48">48 meses - 2.6% EA</option>
+                </select>
+            </div>
 
-      <button type="button" id="calculate">Calcular</button>
-      <button type="button" id="clear-form">Reiniciar</button>
-    </form>
-
-    <div id="result"></div>
-    <button id="export" type="button">Exportar a PDF</button>
-  </div>
-
-  <!-- ✅ Incluir jsPDF correctamente y exponer jsPDF como variable global -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    window.jsPDF = window.jspdf.jsPDF;
-  </script>
-
-  <!-- ✅ Tu script de exportación -->
-  <script src="pdf-export.js"></script>
-
-  <!-- ✅ Tu script de lógica/calculadora -->
-  <script type="module" src="script.js"></script>
-
-  <!-- ✅ Scripts de Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-  <script type="module" src="firebase-config.js"></script>
-
-  <script type="module">
-    import { auth } from './firebase-config.js';
-
-    // Verificar si el usuario está autenticado
-    auth.onAuthStateChanged((user) => {
-        if (!user) {
-            // Redirigir al inicio de sesión si no está autenticado
-            window.location.href = 'login.html';
-        }
-    });
-  </script>
+            <div class="form-buttons">
+                <button id="calculate" type="button">Calcular</button>
+                <button id="clear-form" type="button">Limpiar Formulario</button>
+            </div>
+        </form>
+        <div id="result" class="result-style" style="display: none;"></div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Cyma IT</p>
+    </footer>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
 

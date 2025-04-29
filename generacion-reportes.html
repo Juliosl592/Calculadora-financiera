@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generación de Reportes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+    
+</head>
+<body>
+    <header>
+        <h1>Generación de Reportes</h1>
+        <button id="back">Atrás</button>
+    </header>
+    <main>
+        <section>
+            <h2>Reportes</h2>
+            <button id="generate-pdf">Generar Reporte en PDF</button>
+            <button id="generate-excel">Generar Reporte en Excel</button>
+            <table id="reportes-table" border="1">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Detalle</th>
+                    <th>Acciones</th>
+                </tr>
+                <!-- Los reportes se cargarán dinámicamente aquí -->
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Cyma IT</p>
+    </footer>
+    <script type="module">
+        const backButton = document.getElementById('back');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                window.history.back();
+            });
+        }
+    </script>
+</body>
+</html>

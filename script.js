@@ -1,5 +1,8 @@
 // Importar auth y db desde firebase-config.js
 import { auth, db } from './firebase-config.js';
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
 // Validar que los elementos existan antes de agregar eventos
 const calculateButton = document.getElementById('calculate');
@@ -20,7 +23,35 @@ if (calculateButton) {
 
         // Validar los valores ingresados
         if (isNaN(licenses) || isNaN(precioUnitario)) {
-            alert('Por favor, ingresa valores válidos para las licencias y el precio unitario.');
+            // Función para mostrar mensajes de advertencia en un recuadro moderno
+            function showWarning(message) {
+                // Crear el contenedor del recuadro si no existe
+                let warningBox = document.getElementById('warning-box');
+                if (!warningBox) {
+                    warningBox = document.createElement('div');
+                    warningBox.id = 'warning-box';
+                    warningBox.className = 'warning-box';
+                    document.body.appendChild(warningBox);
+                }
+
+                // Configurar el contenido del recuadro
+                warningBox.innerHTML = `
+                    <h2>Advertencia</h2>
+                    <p>${message}</p>
+                    <button id="close-warning">Aceptar</button>
+                `;
+
+                // Mostrar el recuadro
+                warningBox.style.display = 'block';
+
+                // Manejar el cierre del recuadro
+                const closeButton = document.getElementById('close-warning');
+                closeButton.addEventListener('click', () => {
+                    warningBox.style.display = 'none';
+                });
+            }
+
+            showWarning('Por favor, ingresa valores válidos para las licencias y el precio unitario.');
             return;
         }
 
@@ -77,7 +108,9 @@ if (calculateButton) {
 
             Valor Total: $${formatCurrency(totalCost)} USD
             ${totalMonthlyPayment > 0 ? `Cuota Mensual Total: $${formatCurrency(totalMonthlyPayment)} USD` : ''}
+            
         `;
+        // Mostrar el resultado y desplazar la vista
         resultDiv.style.display = 'block';
         resultDiv.scrollIntoView({ behavior: 'smooth' });
 
@@ -110,29 +143,79 @@ if (clearButton) {
         const resultDiv = document.getElementById('result');
         resultDiv.innerText = '';
         resultDiv.style.display = 'none';
-        alert('El formulario ha sido borrado.');
     });
 } else {
     console.warn('El botón con ID "clear-form" no existe en el DOM.');
 }
 
-const logoutButton = document.getElementById('logout');
-if (logoutButton) {
-    logoutButton.addEventListener('click', async () => {
-        try {
-            await auth.signOut();
-            alert('Has cerrado sesión exitosamente.');
-            window.location.href = 'login.html'; // Redirigir al inicio de sesión
-        } catch (error) {
-            console.error('Error al cerrar sesión:', error);
-            alert('Hubo un error al cerrar sesión. Por favor, inténtalo de nuevo.');
-        }
+// Función para mostrar mensajes de notificación en un recuadro moderno
+function showNotification(message, type = 'success') {
+    // Crear el contenedor del recuadro si no existe
+    let notificationBox = document.getElementById('notification-box');
+    if (!notificationBox) {
+        notificationBox = document.createElement('div');
+        notificationBox.id = 'notification-box';
+        notificationBox.className = 'warning-box'; // Reutilizar el estilo de warning-box
+        document.body.appendChild(notificationBox);
+    }
+
+    // Configurar el contenido del recuadro
+    notificationBox.innerHTML = `
+        <h2>${type === 'success' ? 'Éxito' : 'Notificación'}</h2>
+        <p>${message}</p>
+        <button id="close-notification">Aceptar</button>
+    `;
+
+    // Mostrar el recuadro
+    //notificationBox.style.display = 'block';
+
+    // Manejar el cierre del recuadro
+    const closeButton = document.getElementById('close-notification');
+    closeButton.addEventListener('click', () => {
+        notificationBox.style.display = 'none';
     });
-} else {
-    console.warn('El botón con ID "logout" no existe en el DOM.');
 }
 
-// Función para guardar cotización en Firestore
+// Configuración del botón de cierre de sesión
+export function configureLogoutButton() {
+    const logoutButton = document.getElementById('logout');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                showNotification('Has cerrado sesión exitosamente.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html'; // Redirigir al inicio de sesión
+                }, 1000); // Esperar 1 segundos antes de redirigir
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+                showNotification('Hubo un error al cerrar sesión. Por favor, inténtalo de nuevo.', 'error');
+            }
+        });
+    }
+}
+
+// Configuración del botón de atrás
+const backButton = document.getElementById('back');
+if (backButton) {
+    backButton.addEventListener('click', () => {
+        window.history.back(); // Regresar a la página anterior
+    });
+}
+
+onAuthStateChanged(auth, (user) => { 
+    if (!user) {
+        window.location.href = 'login.html'; // Redirigir al inicio de sesión si no está autenticado
+    } else {
+        // Verificar si el usuario es administrador
+        const isAdmin = user.email === 'admin@cymait.com'; // Cambia esta lógica según tu implementación
+        if (!isAdmin && backButton) {
+            backButton.style.display = 'none'; // Ocultar el botón de regresar para usuarios no administradores
+        }
+    }
+});
+
+// Función para guardar cotización en Firestore con mejor manejo de errores
 async function saveCotizacion(cotizacion) {
     try {
         const user = auth.currentUser;
@@ -141,48 +224,21 @@ async function saveCotizacion(cotizacion) {
             return;
         }
 
-        await db.collection('cotizaciones').add({
+        // Intentar guardar la cotización en Firestore
+        await addDoc(collection(db, 'cotizaciones'), {
             ...cotizacion,
             userId: user.uid,
             username: user.email,
             date: new Date().toISOString()
         });
 
-        //alert('Cotización guardada exitosamente.');
+        // alert('Cotización guardada exitosamente.');
     } catch (error) {
-        console.error('Error al guardar la cotización:', error);
-        alert('Hubo un error al guardar la cotización. Por favor, inténtalo de nuevo.');
-    }
-}
-
-// Función para cambiar la contraseña del usuario
-async function changePassword() {
-    const newPassword = prompt('Por favor, ingresa tu nueva contraseña:');
-
-    if (!newPassword) {
-        alert('La contraseña no puede estar vacía.');
-        return;
-    }
-
-    try {
-        const user = auth.currentUser;
-        if (!user) {
-            alert('Debes iniciar sesión para cambiar tu contraseña.');
-            return;
+        if (error.code === 'permission-denied') {
+            alert('No tienes permisos para guardar cotizaciones. Verifica las reglas de Firestore.');
+        } else {
+            console.error('Error al guardar la cotización:', error);
+            alert('Hubo un error al guardar la cotización. Por favor, inténtalo de nuevo.');
         }
-
-        await user.updatePassword(newPassword);
-        alert('Contraseña actualizada exitosamente.');
-    } catch (error) {
-        console.error('Error al cambiar la contraseña:', error);
-        alert('Hubo un error al cambiar la contraseña. Por favor, inténtalo de nuevo.');
     }
-}
-
-// Validar que el elemento exista antes de agregar el evento
-const changePasswordButton = document.getElementById('change-password');
-if (changePasswordButton) {
-    changePasswordButton.addEventListener('click', changePassword);
-} else {
-    console.warn('El botón de cambio de contraseña no está presente en el DOM.');
 }

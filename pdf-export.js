@@ -1,5 +1,5 @@
-// Este archivo requiere jsPDF para funcionar
-// Asegúrate de incluir jsPDF en el archivo HTML
+// Eliminamos las importaciones de módulos ES6
+// Asegúrate de incluir jsPDF y jsPDF-autotable en el archivo HTML como scripts
 
 // pdf-export.js
 
@@ -14,6 +14,8 @@ function getConsecutivo(fechaClave) {
     localStorage.setItem('cotizaciones', JSON.stringify(data));
     return data[fechaClave];
 }
+
+// Cambiar el ID del botón que escucha el evento al correcto
 
 document.getElementById('export').addEventListener('click', () => {
     // Validar que jsPDF esté correctamente cargado
@@ -31,7 +33,7 @@ document.getElementById('export').addEventListener('click', () => {
 
     img.onload = function () {
         console.log('La imagen se cargó correctamente.');
-        doc.addImage(img, 'PNG', 10, 10, 30, 30);
+        doc.addImage(img, 'PNG', 10, 5, 30, 30);
 
         const today = new Date();
         const yearMonth = today.getFullYear().toString() + (today.getMonth() + 1).toString().padStart(2, '0');
@@ -66,7 +68,7 @@ document.getElementById('export').addEventListener('click', () => {
             ['Modalidad de pago (Licencias)', paymentPlanLicenses],
             ['Implementación', hoursPackageText],
             ['Modalidad de pago (Implementación)', paymentPlanHours],
-            ['Resultado', result]
+            ['Detalle', result]
         ];
 
         let y = 45;
@@ -92,3 +94,60 @@ document.getElementById('export').addEventListener('click', () => {
         alert('No se pudo cargar la imagen. Verifica la ruta.');
     };
 });
+
+// Eliminar las declaraciones de importación y usar las bibliotecas globales
+
+function exportResultToPDF() {
+    const doc = new jsPDF();
+
+    // Configurar el título
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Detalle de Resultados", doc.internal.pageSize.getWidth() / 2, 20, { align: "center" });
+
+    // Obtener los datos de la tabla
+    const tableData = [
+        { concepto: "Licencias", modalidad: "Contado", valor: "$6,250,000.00", cuota: "-" },
+        { concepto: "Bolsa 80h", modalidad: "12 meses", valor: "$1,529,728.53", cuota: "$127,477.38" },
+    ];
+
+    // Configurar la tabla con líneas visibles y diseño profesional
+    doc.autoTable({
+        head: [["Concepto", "Modalidad", "Valor", "Cuota mensual"]],
+        body: tableData.map(row => [row.concepto, row.modalidad, row.valor, row.cuota]),
+        startY: 30,
+        styles: {
+            halign: "center", // Alinear el texto al centro
+            valign: "middle", // Centrar verticalmente el texto
+            fontSize: 10,
+            cellPadding: 5,
+            lineWidth: 0.5, // Grosor de las líneas
+            lineColor: [0, 0, 0], // Color de las líneas
+        },
+        headStyles: {
+            fillColor: [0, 51, 102], // Color de fondo azul oscuro
+            textColor: [255, 255, 255], // Texto blanco
+            fontStyle: "bold",
+        },
+        bodyStyles: {
+            fillColor: [255, 255, 255], // Fondo blanco para las filas
+            textColor: [0, 0, 0], // Texto negro
+        },
+        alternateRowStyles: {
+            fillColor: [240, 240, 240], // Fondo gris claro para filas alternas
+        },
+        foot: [["", "", "Total", "$7,779,728.53"]],
+        footStyles: {
+            fillColor: [200, 200, 200], // Color de fondo gris
+            fontStyle: "bold",
+        },
+        tableLineColor: [0, 0, 0], // Color de las líneas de la tabla
+        tableLineWidth: 0.5, // Grosor de las líneas de la tabla
+    });
+
+    // Guardar el PDF
+    doc.save("resultados.pdf");
+}
+
+// Exponer la función globalmente
+window.exportResultToPDF = exportResultToPDF;

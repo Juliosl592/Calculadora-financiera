@@ -1,16 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8"> <!-- Codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ajuste de la vista para dispositivos móviles -->
+    <title>Iniciar Sesión</title> <!-- Título de la página -->
+    <link rel="stylesheet" href="style.css"> <!-- Enlace a la hoja de estilos CSS -->
+    <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+    <style>
+        body { /* Estilo del cuerpo de la página */
+            display: flex; /* Flexbox para centrar el contenido */
+            flex-direction: column; /* Dirección de la columna */
+            justify-content: center; /* Centrado vertical */
+            align-items: center; /* Centrado horizontal */
+            height: 100vh; /* Altura completa de la ventana */
+            margin: 0; /* Sin margen */
+            font-family: Arial, sans-serif; /* Fuente de la página */
+        }
+
+        header { /* Encabezado de la página */
+            text-align: center; /* Centra el contenido del encabezado */
+            margin-bottom: 5px; /* Espacio entre el encabezado y el formulario */
+            width: 30%; /* Ancho completo del encabezado */
+            margin-top: -5%; /* Espacio superior */
+            position: relative; /* Añadir posición relativa */
+        }
+              
+        header h1 { /* Título del encabezado */
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        main.container { /* Contenedor principal */
+            width: 100%; /* Ancho completo del contenedor */
+            max-width: 400px; /* Ancho máximo del contenedor */
+            padding: 20px; /* Espaciado interno */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            border-radius: 8px; /* Bordes redondeados */
+            background-color: #e1e2e9; /* Fondo claro */
+        }
+
+        form { /* Estilo del formulario */
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label { /* Etiquetas de los campos de entrada */
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        form input { /* Campos de entrada */
+            padding: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        form button { /* Botón de inicio de sesión */
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        form button:hover { /* Efecto al pasar el mouse */
+            background-color: #0056b3; /* Color más oscuro al pasar el mouse */
+        }
+
+        p { /* Párrafo para el enlace de registro */
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        p a { /* Enlace para el registro */
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        p a:hover { /* Color más oscuro al pasar el mouse */
+            text-decoration: underline;
+        }
+        
+
+
+    </style>
+    <img src="Logo Cyma IT.png" alt="Logo Cyma IT" class="logo-cyma"> <!-- style="width: 150px; display: block; margin: 0 auto;" -->
 </head>
 <body>
     <header>
-        <h1>Iniciar Sesión</h1>
+        <h1>Iniciar Sesión</h1> <!-- Título de la página -->
     </header>
-    <main>
+    <main class="container">
         <form id="login-form">
             <label for="email">Correo Electrónico:</label>
             <input type="email" id="email" name="email" autocomplete="email" required>
@@ -21,45 +106,75 @@
             <button type="submit">Ingresar</button>
         </form>
         <p><a href="register.html">¿No tienes una cuenta? Regístrate aquí</a></p>
+        <div id="message" style="color: red; display: none;"></div>
     </main>
     <footer>
         <p>&copy; 2025 Cyma IT</p>
     </footer>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script type="module" src="firebase-config.js"></script>
     <script type="module">
-        import { auth } from './firebase-config.js';
+        import { auth, db } from './firebase-config.js';
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        // Función para mostrar mensajes de error en un recuadro moderno
+        function showError(message) {
+            let errorBox = document.getElementById('error-box');
+            if (!errorBox) {
+                errorBox = document.createElement('div');
+                errorBox.id = 'error-box';
+                errorBox.className = 'warning-box'; // Reutilizar el estilo de warning-box
+                document.body.appendChild(errorBox);
+            }
+
+            errorBox.innerHTML = `
+                <h2>Error</h2>
+                <p>${message}</p>
+                <button id="close-error">Aceptar</button>
+            `;
+
+            errorBox.style.display = 'block';
+
+            const closeButton = document.getElementById('close-error');
+            closeButton.addEventListener('click', () => {
+                errorBox.style.display = 'none';
+            });
+        }
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evitar el envío del formulario
-
+            e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const messageDiv = document.getElementById('message') || document.createElement('div');
-            messageDiv.id = 'message';
-            document.body.appendChild(messageDiv);
-
             try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
                 if (user) {
-                    messageDiv.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
-                    messageDiv.style.color = 'green';
-                    setTimeout(() => {
-                        window.location.href = 'index.html'; // Redirigir a la página principal
-                    }, 2000);
-                } else {
-                    messageDiv.textContent = 'No se pudo autenticar al usuario.';
-                    messageDiv.style.color = 'red';
+                    console.log("Inicio de sesión exitoso:", user.email);
+
+                    // Verificar si el usuario está bloqueado
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists() && userDoc.data().blocked) {
+                        showError("Tu cuenta está bloqueada. Por favor, comunícate con el administrador.");
+                        await auth.signOut(); // Cerrar sesión inmediatamente
+                        return;
+                    }
+
+                    // Redirigir al panel de administración si el usuario es admin
+                    if (user.email === 'admin@cymait.com') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'calculadora.html'; // Redirigir a la calculadora financiera
+                    }
                 }
             } catch (error) {
-                console.error('Error al iniciar sesión:', error);
-                messageDiv.textContent = 'Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.';
-                messageDiv.style.color = 'red';
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                    showError("Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e inténtalo de nuevo.");
+                } else {
+                    console.error("Error al iniciar sesión:", error);
+                    showError("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+                }
             }
         });
     </script>

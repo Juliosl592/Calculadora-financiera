@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+</head>
+<body>
+    <header>
+        <h1>Gestión de Usuarios</h1>
+        <button id="back">Atrás</button>
+    </header>
+    <main>
+        <section>
+            <h2>Usuarios</h2>
+            <table id="users-table" border="1">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los usuarios se cargarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Cyma IT</p>
+    </footer>
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        async function loadUsers() {
+            const usersTableBody = document.querySelector('#users-table tbody');
+            usersTableBody.innerHTML = ''; // Limpiar la tabla antes de cargar
+
+            const querySnapshot = await getDocs(collection(db, 'users'));
+            querySnapshot.forEach((userDoc) => {
+                const userData = userDoc.data();
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${userData.username}</td>
+                    <td>${userData.email}</td>
+                    <td>
+                        <select class="role-select" data-id="${userDoc.id}">
+                            <option value="user" ${userData.role === 'user' ? 'selected' : ''}>Usuario</option>
+                            <option value="admin" ${userData.role === 'admin' ? 'selected' : ''}>Administrador</option>
+                        </select>
+                    </td>
+                    <td>${userData.blocked ? 'Bloqueado' : 'Activo'}</td>
+                    <td>
+                        <button class="block-btn" data-id="${userDoc.id}" data-blocked="${userData.blocked}">
+                            ${userData.blocked ? 'Desbloquear' : 'Bloquear'}
+                        </button>
+                    </td>
+                `;
+
+                usersTableBody.appendChild(row);
+            });
+
+            // Agregar eventos a los botones y selects
+            document.querySelectorAll('.block-btn').forEach((button) => {
+                button.addEventListener('click', async (e) => {
+                    const userId = e.target.dataset.id;
+                    const isBlocked = e.target.dataset.blocked === 'true';
+
+                    await updateDoc(doc(db, 'users', userId), {
+                        blocked: !isBlocked
+                    });
+
+                    loadUsers(); // Recargar la tabla
+                });
+            });
+
+            document.querySelectorAll('.role-select').forEach((select) => {
+                select.addEventListener('change', async (e) => {
+                    const userId = e.target.dataset.id;
+                    const newRole = e.target.value;
+
+                    await updateDoc(doc(db, 'users', userId), {
+                        role: newRole
+                    });
+
+                    loadUsers(); // Recargar la tabla
+                });
+            });
+        }
+
+        // Cargar los usuarios al cargar la página
+        loadUsers();
+
+        const backButton = document.getElementById('back');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                window.history.back();
+            });
+        }
+    </script>
+</body>
+</html>

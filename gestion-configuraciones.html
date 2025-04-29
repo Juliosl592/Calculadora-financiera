@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Configuraciones</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+</head>
+<body>
+    <header>
+        <h1>Gestión de Configuraciones</h1>
+        <button id="back">Atrás</button>
+    </header>
+    <main>
+        <section>
+            <h2>Configuraciones</h2>
+            <form id="config-form">
+                <fieldset>
+                    <legend>Plazos de Financiamiento</legend>
+                    <table id="plazos-table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Plazo (meses)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los plazos se cargarán dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                    <label for="plazo">Nuevo Plazo (meses):</label>
+                    <input type="number" id="plazo" name="plazo" required>
+                    <button type="button" id="add-plazo">Agregar</button>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Tasas de Financiamiento</legend>
+                    <table id="tasas-table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Tasa (%)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las tasas se cargarán dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                    <label for="tasa">Nueva Tasa (%):</label>
+                    <input type="number" step="0.01" id="tasa" name="tasa" required>
+                    <button type="button" id="add-tasa">Agregar</button>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Bolsas de Horas</legend>
+                    <table id="bolsas-table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Bolsa (horas)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las bolsas se cargarán dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                    <label for="bolsa">Nueva Bolsa (horas):</label>
+                    <input type="number" id="bolsa" name="bolsa" required>
+                    <button type="button" id="add-bolsa">Agregar</button>
+                </fieldset>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Cyma IT</p>
+    </footer>
+    <script type="module">
+    import { db } from './firebase-config.js';
+    import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+    async function loadConfigurations() {
+        // Cargar plazos
+        const plazosTableBody = document.querySelector('#plazos-table tbody');
+        plazosTableBody.innerHTML = '';
+        const plazosSnapshot = await getDocs(collection(db, 'plazos'));
+        plazosSnapshot.forEach((plazoDoc) => {
+            const plazoData = plazoDoc.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td contenteditable="true" class="editable" data-id="${plazoDoc.id}" data-field="meses">${plazoData.meses}</td>
+                <td>${plazoData.activo ? 'Activo' : 'Inhabilitado'}</td>
+                <td>
+                    <button class="toggle-btn" data-id="${plazoDoc.id}" data-activo="${plazoData.activo}">
+                        ${plazoData.activo ? 'Inhabilitar' : 'Habilitar'}
+                    </button>
+                </td>
+            `;
+            plazosTableBody.appendChild(row);
+        });
+
+        // Cargar tasas
+        const tasasTableBody = document.querySelector('#tasas-table tbody');
+        tasasTableBody.innerHTML = '';
+        const tasasSnapshot = await getDocs(collection(db, 'tasas'));
+        tasasSnapshot.forEach((tasaDoc) => {
+            const tasaData = tasaDoc.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td contenteditable="true" class="editable" data-id="${tasaDoc.id}" data-field="porcentaje">${tasaData.porcentaje}</td>
+                <td>${tasaData.activo ? 'Activo' : 'Inhabilitado'}</td>
+                <td>
+                    <button class="toggle-btn" data-id="${tasaDoc.id}" data-activo="${tasaData.activo}">
+                        ${tasaData.activo ? 'Inhabilitar' : 'Habilitar'}
+                    </button>
+                </td>
+            `;
+            tasasTableBody.appendChild(row);
+        });
+
+        // Cargar bolsas
+        const bolsasTableBody = document.querySelector('#bolsas-table tbody');
+        bolsasTableBody.innerHTML = '';
+        const bolsasSnapshot = await getDocs(collection(db, 'bolsas'));
+        bolsasSnapshot.forEach((bolsaDoc) => {
+            const bolsaData = bolsaDoc.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td contenteditable="true" class="editable" data-id="${bolsaDoc.id}" data-field="horas">${bolsaData.horas}</td>
+                <td>${bolsaData.activo ? 'Activo' : 'Inhabilitado'}</td>
+                <td>
+                    <button class="toggle-btn" data-id="${bolsaDoc.id}" data-activo="${bolsaData.activo}">
+                        ${bolsaData.activo ? 'Inhabilitar' : 'Habilitar'}
+                    </button>
+                </td>
+            `;
+            bolsasTableBody.appendChild(row);
+        });
+
+        // Agregar eventos a los botones de habilitar/inhabilitar
+        document.querySelectorAll('.toggle-btn').forEach((button) => {
+            button.addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                const isActive = e.target.dataset.activo === 'true';
+                const collectionName = e.target.closest('table').id.split('-')[0];
+
+                await updateDoc(doc(db, collectionName, id), {
+                    activo: !isActive
+                });
+
+                loadConfigurations(); // Recargar la tabla
+            });
+        });
+
+        // Agregar eventos para guardar cambios en campos editables
+        document.querySelectorAll('.editable').forEach((cell) => {
+            cell.addEventListener('blur', async (e) => {
+                const id = e.target.dataset.id;
+                const field = e.target.dataset.field;
+                const newValue = e.target.textContent.trim();
+                const collectionName = e.target.closest('table').id.split('-')[0];
+
+                const updateData = {};
+                updateData[field] = isNaN(newValue) ? newValue : parseFloat(newValue);
+
+                await updateDoc(doc(db, collectionName, id), updateData);
+            });
+        });
+    }
+
+    // Cargar configuraciones al cargar la página
+    loadConfigurations();
+
+    const backButton = document.getElementById('back');
+    if (backButton) {
+        backButton.addEventListener('click', () => {
+            window.history.back(); // Regresar a la página anterior
+        });
+    }
+    </script>
+</body>
+</html>
