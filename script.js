@@ -1,6 +1,6 @@
 // Importar auth y db desde firebase-config.js
 import { auth, db } from './firebase-config.js';
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { collection, getDocs, updateDoc, doc, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import { EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
@@ -242,3 +242,25 @@ async function saveCotizacion(cotizacion) {
         }
     }
 }
+
+// Asegúrate de que loadConfigurations se ejecuta
+async function loadConfigurations() {
+    try {
+        console.log("Ejecutando loadConfigurations...");
+        // Aquí iría la lógica de carga de configuraciones
+        // Por ejemplo, cargar datos de Firebase
+        const financingTermsSnapshot = await getDocs(collection(db, 'financingterms'));
+        console.log("Términos de financiamiento obtenidos:", financingTermsSnapshot.docs.map(doc => doc.data()));
+
+        const hourPackagesSnapshot = await getDocs(collection(db, 'hourpackages'));
+        console.log("Bolsas de horas obtenidas:", hourPackagesSnapshot.docs.map(doc => doc.data()));
+    } catch (error) {
+        console.error("Error al ejecutar loadConfigurations:", error);
+    }
+}
+
+// Llamar a loadConfigurations al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOMContentLoaded: Llamando a loadConfigurations...");
+    loadConfigurations();
+});
