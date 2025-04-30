@@ -13,27 +13,27 @@
     </header>
     <style>
     main.container {  /* Contenedor principal */
-        max-width: 770px; /* Ancho máximo del contenedor */
-        margin: 2rem auto; /* Centrado automático */
-        padding: 2rem; /* Espaciado interno */
-        background-color: #e1e2e9; /* Fondo blanco */
-        border-radius: 8px; /* Bordes redondeados */
+        width: 100%; /* Ancho completo del contenedor */    
+        max-width: 56%; /* Ancho máximo del contenedor */
+        padding: 20px; /* Espaciado interno */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-        position: relative; /* Posición relativa para el pseudo-elemento */
+        border-radius: 8px; /* Bordes redondeados */
+        background-color: #e1e2e9; /* Fondo blanco */
     }
     header { /* Encabezado */
     background-color: var(--primary-color); /* Azul corporativo */
     color: white; /* Texto blanco */
     padding: 1rem; /* Espaciado interno */
+    text-wrap: balance; /* Ajuste de texto */
     text-align: center; /* Centrado */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    max-width: 800px; /* Ancho máximo del encabezado */
+    width: 100%; /* Ancho completo del encabezado */
+    max-width: 56%; /* Ancho máximo del encabezado */
     margin: 0 auto; /* Centrado automático */
     border-radius: 8px; /* Bordes redondeados */
     position: relative; /* Posición relativa para el pseudo-elemento */
     z-index: 1; /* Asegura que el encabezado esté por encima del contenedor */
     top: 20px; /* Desplazamiento hacia abajo */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
     </style>
     <main class="container">

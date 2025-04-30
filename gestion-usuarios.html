@@ -6,6 +6,111 @@
     <title>Gestión de Usuarios</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+    <style>
+        body {
+            display: flex; /* Flexbox para centrar contenido */
+            flex-direction: column; /* Mantener el header en la parte superior */
+            min-height: 100vh; /* Altura mínima de la ventana */
+            margin: 0; /* Eliminar márgenes */
+            font-family: Arial, sans-serif; /* Fuente general */
+            background-color: #f4f4f4; /* Fondo claro */
+        }
+
+        header {
+            position: sticky; /* Fija el header en la parte superior */
+            top: 0; /* Posición superior */
+            z-index: 1000; /* Asegura que el header esté por encima del contenido */
+            background-color: #0056b3; /* Fondo azul corporativo */
+            color: white; /* Texto blanco */
+            padding: 1rem; /* Espaciado interno */
+            text-align: center; /* Centrar texto */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+
+        main {
+            flex: 1; /* Permitir que el contenido principal ocupe el espacio restante */
+            display: flex; /* Flexbox para centrar contenido */
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+            padding: 1rem; /* Espaciado interno */
+        }
+
+        section { /* Sección principal */
+            width: 100%; /* Ocupa todo el ancho disponible */
+            max-width: 90%; /* Ancho máximo del contenedor */
+            overflow-y: auto; /* Barra de desplazamiento vertical */
+            max-height: 70vh; /* Altura máxima del contenedor */
+            background-color: transparent; /* Fondo blanco */
+            border-radius: 8px; /* Bordes redondeados */
+            padding: 1rem; /* Espaciado interno */
+        }
+
+        table {
+            width: 100%; /* Ocupa todo el ancho disponible */
+            max-width: 90%; /* Ancho máximo del contenedor */
+            border-collapse: collapse; /* Elimina los espacios entre bordes */
+            font-size: 1rem; /* Tamaño de fuente */
+            margin: 0 auto; /* Centrado automático */
+        }
+
+        th, td {
+            padding: 0.8rem; /* Espaciado interno */
+            text-align: left; /* Alineación del texto */
+            border: 1px solid #ccc; /* Borde gris claro */
+        }
+
+        th { /* Encabezados de la tabla */
+            background-color: #0056b3; /* Fondo azul corporativo */
+            color: white; /* Texto blanco */
+            font-weight: bold; /* Negrita */
+            text-align: center; /* Centrar texto */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Fondo gris claro para filas pares */
+        }
+
+        tr:hover {
+            background-color: #e1e2e9; /* Fondo más claro al pasar el ratón */
+        }
+
+        .block-btn {
+            background-color: #dd8089; /* Rojo */
+            color: white; /* Texto blanco */
+            border: none; /* Sin borde */
+            padding: 0.5rem 1rem; /* Espaciado interno */
+            border-radius: 4px; /* Bordes redondeados */
+            cursor: pointer; /* Cambia el cursor al pasar el ratón */
+            font-size: 0.9rem; /* Tamaño de fuente */
+            width: auto; /* Ancho completo */
+            margin: 0 auto; /* Centrado automático */
+            display: block; /* Bloque para centrar */
+            max-width: 100; /* Ancho máximo del botón */
+        }
+
+        .block-btn:hover {
+            background-color: #c82333; /* Rojo más oscuro al pasar el ratón */
+        }
+
+        .role-select {
+            padding: 0.4rem; /* Espaciado interno */
+            font-size: 0.9rem; /* Tamaño de fuente */
+            border: 1px solid #ccc; /* Borde gris claro */
+            border-radius: 4px; /* Bordes redondeados */
+            margin: auto; /* Centrado automático */
+            display: block; /* Bloque para centrar */
+        }
+        .role-action { /* Estilo para el contenedor de acciones */
+            display: flex; /* Flexbox para alinear elementos */
+            justify-content: space-between; /* Espacio entre los elementos */
+            align-items: center; /* Centrar verticalmente */
+
+        }
+
+        h2 {
+            display: none; /* Ocultar el título "Usuarios" */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -14,7 +119,7 @@
     </header>
     <main>
         <section>
-            <h2>Usuarios</h2>
+            <h2>Usuarios</h2> <!-- Ocultado con CSS -->
             <table id="users-table" border="1">
                 <thead>
                     <tr>

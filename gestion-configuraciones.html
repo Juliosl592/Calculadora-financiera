@@ -5,7 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Configuraciones</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
+    <link rel="icon" href="Logo Cyma IT.png" type="image/png">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #0056b3;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        section {
+            width: 100%;
+            max-width: 90%;
+            overflow-y: auto;
+            max-height: 70vh;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+            margin: 0 auto;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #0056b3; /* Fondo azul corporativo */
+            color: white; /* Texto blanco */
+            font-weight: bold;
+            text-align: center; /* Centrar texto */
+        }
+
+        td {
+            text-align: center; /* Centrar texto */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Fondo gris claro para filas pares */
+        }
+
+        tr:hover {
+            background-color: #e1e2e9; /* Fondo más claro al pasar el ratón */
+        }
+
+        .toggle-btn {
+            background-color: #dc3545; /* Rojo */
+            color: white; /* Texto blanco */
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .toggle-btn:hover {
+            background-color: #c82333; /* Rojo más oscuro */
+        }
+
+        .editable {
+            cursor: text;
+        }
+
+        .add-btn {
+            background-color: #007bff; /* Azul corporativo */
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .add-btn:hover {
+            background-color: #0056b3; /* Azul más oscuro */
+        }
+
+        fieldset {
+            margin-bottom: 2rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -14,63 +131,51 @@
     </header>
     <main>
         <section>
-            <h2>Configuraciones</h2>
             <form id="config-form">
+                <!-- Módulo 1: Financing Terms -->
                 <fieldset>
-                    <legend>Plazos de Financiamiento</legend>
-                    <table id="plazos-table" border="1">
+                    <legend>Términos de Financiamiento</legend>
+                    <table id="financingterms-table">
                         <thead>
                             <tr>
                                 <th>Plazo (meses)</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Los plazos se cargarán dinámicamente aquí -->
-                        </tbody>
-                    </table>
-                    <label for="plazo">Nuevo Plazo (meses):</label>
-                    <input type="number" id="plazo" name="plazo" required>
-                    <button type="button" id="add-plazo">Agregar</button>
-                </fieldset>
-
-                <fieldset>
-                    <legend>Tasas de Financiamiento</legend>
-                    <table id="tasas-table" border="1">
-                        <thead>
-                            <tr>
                                 <th>Tasa (%)</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Las tasas se cargarán dinámicamente aquí -->
+                            <!-- Los términos de financiamiento se cargarán dinámicamente aquí -->
                         </tbody>
                     </table>
-                    <label for="tasa">Nueva Tasa (%):</label>
-                    <input type="number" step="0.01" id="tasa" name="tasa" required>
-                    <button type="button" id="add-tasa">Agregar</button>
+                    <label for="financing-months">Nuevo Plazo (meses):</label>
+                    <input type="number" id="financing-months" name="financing-months" required>
+                    <label for="financing-rate">Nueva Tasa (%):</label>
+                    <input type="number" step="0.01" id="financing-rate" name="financing-rate" required>
+                    <button type="button" id="add-financingterm" class="add-btn">Agregar</button>
                 </fieldset>
 
+                <!-- Módulo 2: Hour Packages -->
                 <fieldset>
                     <legend>Bolsas de Horas</legend>
-                    <table id="bolsas-table" border="1">
+                    <table id="hourpackages-table">
                         <thead>
                             <tr>
-                                <th>Bolsa (horas)</th>
+                                <th>Horas</th>
+                                <th>Precio (USD)</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Las bolsas se cargarán dinámicamente aquí -->
+                            <!-- Las bolsas de horas se cargarán dinámicamente aquí -->
                         </tbody>
                     </table>
-                    <label for="bolsa">Nueva Bolsa (horas):</label>
-                    <input type="number" id="bolsa" name="bolsa" required>
-                    <button type="button" id="add-bolsa">Agregar</button>
+                    <label for="hourpackage-hours">Nueva Bolsa (horas):</label>
+                    <input type="number" id="hourpackage-hours" name="hourpackage-hours" required>
+                    <label for="hourpackage-price">Precio (USD):</label>
+                    <input type="number" step="0.01" id="hourpackage-price" name="hourpackage-price" required>
+                    <button type="button" id="add-hourpackage" class="add-btn">Agregar</button>
                 </fieldset>
             </form>
         </section>
@@ -79,107 +184,135 @@
         <p>&copy; 2025 Cyma IT</p>
     </footer>
     <script type="module">
-    import { db } from './firebase-config.js';
-    import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, updateDoc, doc, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-    async function loadConfigurations() {
-        // Cargar plazos
-        const plazosTableBody = document.querySelector('#plazos-table tbody');
-        plazosTableBody.innerHTML = '';
-        const plazosSnapshot = await getDocs(collection(db, 'plazos'));
-        plazosSnapshot.forEach((plazoDoc) => {
-            const plazoData = plazoDoc.data();
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td contenteditable="true" class="editable" data-id="${plazoDoc.id}" data-field="meses">${plazoData.meses}</td>
-                <td>${plazoData.activo ? 'Activo' : 'Inhabilitado'}</td>
-                <td>
-                    <button class="toggle-btn" data-id="${plazoDoc.id}" data-activo="${plazoData.activo}">
-                        ${plazoData.activo ? 'Inhabilitar' : 'Habilitar'}
-                    </button>
-                </td>
-            `;
-            plazosTableBody.appendChild(row);
-        });
+        async function loadConfigurations() {
+            // Cargar términos de financiamiento
+            const financingTermsTableBody = document.querySelector('#financingterms-table tbody');
+            financingTermsTableBody.innerHTML = ''; // Limpiar la tabla antes de cargar
+            try {
+                const financingTermsSnapshot = await getDocs(collection(db, 'financingterms'));
+                if (financingTermsSnapshot.empty) {
+                    financingTermsTableBody.innerHTML = '<tr><td colspan="4">No hay términos de financiamiento disponibles.</td></tr>';
+                } else {
+                    financingTermsSnapshot.forEach((termDoc) => {
+                        const termData = termDoc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td contenteditable="true" class="editable" data-id="${termDoc.id}" data-field="months">${termData.months || 'N/A'}</td>
+                            <td contenteditable="true" class="editable" data-id="${termDoc.id}" data-field="rate">${termData.rate || 'N/A'}</td>
+                            <td>${termData.active ? 'Activo' : 'Inhabilitado'}</td>
+                            <td>
+                                <button class="toggle-btn" data-id="${termDoc.id}" data-active="${termData.active}">
+                                    ${termData.active ? 'Inhabilitar' : 'Habilitar'}
+                                </button>
+                            </td>
+                        `;
+                        financingTermsTableBody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar términos de financiamiento:", error);
+                financingTermsTableBody.innerHTML = '<tr><td colspan="4">Error al cargar los datos.</td></tr>';
+            }
 
-        // Cargar tasas
-        const tasasTableBody = document.querySelector('#tasas-table tbody');
-        tasasTableBody.innerHTML = '';
-        const tasasSnapshot = await getDocs(collection(db, 'tasas'));
-        tasasSnapshot.forEach((tasaDoc) => {
-            const tasaData = tasaDoc.data();
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td contenteditable="true" class="editable" data-id="${tasaDoc.id}" data-field="porcentaje">${tasaData.porcentaje}</td>
-                <td>${tasaData.activo ? 'Activo' : 'Inhabilitado'}</td>
-                <td>
-                    <button class="toggle-btn" data-id="${tasaDoc.id}" data-activo="${tasaData.activo}">
-                        ${tasaData.activo ? 'Inhabilitar' : 'Habilitar'}
-                    </button>
-                </td>
-            `;
-            tasasTableBody.appendChild(row);
-        });
+            // Cargar bolsas de horas
+            const hourPackagesTableBody = document.querySelector('#hourpackages-table tbody');
+            hourPackagesTableBody.innerHTML = ''; // Limpiar la tabla antes de cargar
+            try {
+                const hourPackagesSnapshot = await getDocs(collection(db, 'hourpackages'));
+                if (hourPackagesSnapshot.empty) {
+                    hourPackagesTableBody.innerHTML = '<tr><td colspan="4">No hay bolsas de horas disponibles.</td></tr>';
+                } else {
+                    hourPackagesSnapshot.forEach((packageDoc) => {
+                        const packageData = packageDoc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td contenteditable="true" class="editable" data-id="${packageDoc.id}" data-field="hours">${packageData.hours || 'N/A'}</td>
+                            <td contenteditable="true" class="editable" data-id="${packageDoc.id}" data-field="price">${packageData.price || 'N/A'}</td>
+                            <td>${packageData.active ? 'Activo' : 'Inhabilitado'}</td>
+                            <td>
+                                <button class="toggle-btn" data-id="${packageDoc.id}" data-active="${packageData.active}">
+                                    ${packageData.active ? 'Inhabilitar' : 'Habilitar'}
+                                </button>
+                            </td>
+                        `;
+                        hourPackagesTableBody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar bolsas de horas:", error);
+                hourPackagesTableBody.innerHTML = '<tr><td colspan="4">Error al cargar los datos.</td></tr>';
+            }
 
-        // Cargar bolsas
-        const bolsasTableBody = document.querySelector('#bolsas-table tbody');
-        bolsasTableBody.innerHTML = '';
-        const bolsasSnapshot = await getDocs(collection(db, 'bolsas'));
-        bolsasSnapshot.forEach((bolsaDoc) => {
-            const bolsaData = bolsaDoc.data();
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td contenteditable="true" class="editable" data-id="${bolsaDoc.id}" data-field="horas">${bolsaData.horas}</td>
-                <td>${bolsaData.activo ? 'Activo' : 'Inhabilitado'}</td>
-                <td>
-                    <button class="toggle-btn" data-id="${bolsaDoc.id}" data-activo="${bolsaData.activo}">
-                        ${bolsaData.activo ? 'Inhabilitar' : 'Habilitar'}
-                    </button>
-                </td>
-            `;
-            bolsasTableBody.appendChild(row);
-        });
+            // Agregar eventos a los botones de habilitar/inhabilitar
+            document.querySelectorAll('.toggle-btn').forEach((button) => {
+                button.addEventListener('click', async (e) => {
+                    const id = e.target.dataset.id;
+                    const isActive = e.target.dataset.active === 'true';
+                    const collectionName = e.target.closest('table').id.split('-')[0];
 
-        // Agregar eventos a los botones de habilitar/inhabilitar
-        document.querySelectorAll('.toggle-btn').forEach((button) => {
-            button.addEventListener('click', async (e) => {
-                const id = e.target.dataset.id;
-                const isActive = e.target.dataset.activo === 'true';
-                const collectionName = e.target.closest('table').id.split('-')[0];
-
-                await updateDoc(doc(db, collectionName, id), {
-                    activo: !isActive
+                    try {
+                        await updateDoc(doc(db, collectionName, id), {
+                            active: !isActive
+                        });
+                        loadConfigurations(); // Recargar la tabla
+                    } catch (error) {
+                        console.error(`Error al actualizar el estado en ${collectionName}:`, error);
+                    }
                 });
-
-                loadConfigurations(); // Recargar la tabla
             });
-        });
 
-        // Agregar eventos para guardar cambios en campos editables
-        document.querySelectorAll('.editable').forEach((cell) => {
-            cell.addEventListener('blur', async (e) => {
-                const id = e.target.dataset.id;
-                const field = e.target.dataset.field;
-                const newValue = e.target.textContent.trim();
-                const collectionName = e.target.closest('table').id.split('-')[0];
+            // Agregar eventos para guardar cambios en campos editables
+            document.querySelectorAll('.editable').forEach((cell) => {
+                cell.addEventListener('blur', async (e) => {
+                    const id = e.target.dataset.id;
+                    const field = e.target.dataset.field;
+                    const newValue = e.target.textContent.trim();
+                    const collectionName = e.target.closest('table').id.split('-')[0];
 
-                const updateData = {};
-                updateData[field] = isNaN(newValue) ? newValue : parseFloat(newValue);
+                    const updateData = {};
+                    updateData[field] = isNaN(newValue) ? newValue : parseFloat(newValue);
 
-                await updateDoc(doc(db, collectionName, id), updateData);
+                    try {
+                        await updateDoc(doc(db, collectionName, id), updateData);
+                    } catch (error) {
+                        console.error(`Error al actualizar el campo ${field} en ${collectionName}:`, error);
+                    }
+                });
             });
-        });
-    }
+        }
 
-    // Cargar configuraciones al cargar la página
-    loadConfigurations();
-
-    const backButton = document.getElementById('back');
-    if (backButton) {
-        backButton.addEventListener('click', () => {
-            window.history.back(); // Regresar a la página anterior
+        // Agregar nuevos términos de financiamiento
+        document.getElementById('add-financingterm').addEventListener('click', async () => {
+            const months = parseInt(document.getElementById('financing-months').value);
+            const rate = parseFloat(document.getElementById('financing-rate').value);
+            if (!isNaN(months) && !isNaN(rate)) {
+                await addDoc(collection(db, 'financingterms'), { months, rate, active: true });
+                loadConfigurations();
+            }
         });
-    }
+
+        // Agregar nuevas bolsas de horas
+        document.getElementById('add-hourpackage').addEventListener('click', async () => {
+            const hours = parseInt(document.getElementById('hourpackage-hours').value);
+            const price = parseFloat(document.getElementById('hourpackage-price').value);
+            if (!isNaN(hours) && !isNaN(price)) {
+                await addDoc(collection(db, 'hourpackages'), { hours, price, active: true });
+                loadConfigurations();
+            }
+        });
+
+        // Cargar configuraciones al cargar la página
+        loadConfigurations();
+
+        const backButton = document.getElementById('back');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                window.history.back();
+            });
+        }
     </script>
 </body>
 </html>

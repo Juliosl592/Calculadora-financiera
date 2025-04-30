@@ -14,7 +14,8 @@
                 <li><a href="gestion-usuarios.html" style="color: white; text-decoration: none;">Gestión de Usuarios</a></li>
                 <li><a href="gestion-configuraciones.html" style="color: white; text-decoration: none;">Gestión de Configuraciones</a></li>
                 <li><a href="generacion-reportes.html" style="color: white; text-decoration: none;">Generación de Reportes</a></li>
-                <li><a href="calculadora.html" style="color: white; text-decoration: none;">Calculadora</a></li>
+                <li><a href="index.html" style="color: white; text-decoration: none;">Calculadora</a></li>
+                
             </ul>
         </nav>
         <div class="header-buttons" style="margin-top: 1rem;">
@@ -33,6 +34,26 @@
 
         // Configurar el botón de cierre de sesión
         configureLogoutButton();
+
+        // Estilo para el botón de cierre de sesión al pasar el ratón
+        const logoutButton = document.getElementById('logout');
+        logoutButton.addEventListener('mouseover', () => {
+            logoutButton.style.backgroundColor = '#004494'; // Azul más oscuro
+        });
+        logoutButton.addEventListener('mouseout', () => {
+            logoutButton.style.backgroundColor = '#0056b3'; // Color original
+        });
+
+        // Cambiar color de las opciones del menú al pasar el mouse
+        const menuLinks = document.querySelectorAll('.admin-nav a');
+        menuLinks.forEach(link => {
+            link.addEventListener('mouseover', () => {
+                link.style.color = '#004494'; // Azul más oscuro
+            });
+            link.addEventListener('mouseout', () => {
+                link.style.color = 'white'; // Color original
+            });
+        });
     </script>
 </body>
 </html>

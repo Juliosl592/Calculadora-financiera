@@ -7,6 +7,29 @@
     <link rel="stylesheet" href="style.css"> <!-- Estilos generales -->
     <link rel="icon" href="Logo Cyma IT.png" type="image/png"> <!-- Icono de la página -->
     <style>
+        .container { /* Contenedor principal */
+            width: 100%; /* Ancho completo del contenedor */
+            max-width: 56%; /* Ancho máximo del contenedor */
+            padding: 20px; /* Espaciado interno */
+            text-wrap: balance; /* Ajuste de texto */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            border-radius: 8px; /* Bordes redondeados */
+            background-color: #e1e2e9; /* Fondo blanco */
+        }
+        button {
+            background-color: #007bff; /* Azul Cyma IT */
+            color: white; /* Texto blanco */
+            border: none; /* Sin borde */
+            width: 100%; /* Ancho completo */
+            max-width: 56%; /* Ancho máximo */
+            padding: 10px 20px; /* Espaciado interno */
+            text-wrap: balance; /* Ajuste de texto */
+            border-radius: 4px; /* Bordes redondeados */
+            cursor: pointer; /* Cambia el cursor al pasar por encima */
+            font-size: 1rem; /* Tamaño de la fuente */
+        }
+        
+                
         /* Estilos para el modal */
         .modal { 
             position: fixed;/* Fijo en la pantalla */
@@ -69,7 +92,7 @@
         <h1>Gestor de Licencias</h1>
         <div class="header-buttons">
             <button id="logout">Cerrar Sesión</button>
-            <!--button id="back">Atrás</button-->
+            <button id="back" style="display: none;">Atrás</button> <!-- Botón de "Atrás" oculto por defecto -->
         </div>
     </header>
     <div class="container">
@@ -143,6 +166,15 @@
                     // Si el usuario está autenticado, muestra el contenido
                     document.body.classList.remove('hidden');
                     document.body.classList.add('visible');
+
+                    // Mostrar el botón "Atrás" solo para el administrador
+                    const backButton = document.getElementById('back');
+                    if (user.email === 'admin@cymait.com') {
+                        backButton.style.display = 'inline-block';
+                        backButton.addEventListener('click', () => {
+                            window.location.href = 'admin.html'; // Redirigir al panel de administración
+                        });
+                    }
                 } else {
                     // Redirige al login si no está autenticado
                     window.location.href = 'login.html';
@@ -155,23 +187,6 @@
 
         // Configurar el botón de cierre de sesión
         configureLogoutButton();
-    </script>
-    <script type="module">
-        import { auth } from './firebase-config.js';
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-
-        const backButton = document.getElementById('back');
-        if (backButton) {
-            backButton.addEventListener('click', () => {
-                onAuthStateChanged(auth, (user) => {
-                    if (user && user.email === 'admin@cymait.com') {
-                        window.location.href = 'admin.html'; // Redirigir al panel de administración
-                    } else {
-                        window.history.back(); // Regresar a la página anterior
-                    }
-                });
-            });
-        }
     </script>
 </body>
 </html>

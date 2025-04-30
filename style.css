@@ -8,18 +8,6 @@
     --border-color: #cccccc; /* Bordes suaves */
 }
 
-.logo-cyma {
-    position: absolute; /* Posición absoluta */
-    border-top-width: 5px; /* Desplazamiento hacia abajo */
-    left: 15%; /* Desplazamiento hacia la izquierda */
-    transform: translate(-50%, 0); /* Centrado */
-    width: 280px; /* Ancho de la imagen */
-    display: block; /* Hace que se comporte como un bloque para centrarlo */
-    margin: 0 auto 20px auto; /* 20px de espacio abajo, centrado a los lados */
-    border-radius: 8px; /* Bordes redondeados */
-    }
-
-
 /* Estilo general */
 body { 
     font-family: 'Arial', sans-serif; /* Fuente sans-serif */
@@ -35,7 +23,8 @@ header { /* Encabezado */
     padding: 1rem; /* Espaciado interno */
     text-align: center; /* Centrado */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    max-width: 800px; /* Ancho máximo del encabezado */
+    width: 100%; /* Ancho completo */
+    max-width: 56%; /* Ancho máximo del encabezado */
     margin: 0 auto; /* Centrado automático */
     border-radius: 8px; /* Bordes redondeados */
     position: relative; /* Posición relativa para el pseudo-elemento */
@@ -50,7 +39,7 @@ h1, h2 { /* Encabezados */
 }
 
 .container {  /* Contenedor principal */
-    max-width: 770px; /* Ancho máximo del contenedor */
+    max-width: 56%; /* Ancho máximo del contenedor */
     margin: 2rem auto; /* Centrado automático */
     padding: 2rem; /* Espaciado interno */
     background-color: #e1e2e9; /* Fondo blanco */
@@ -70,11 +59,11 @@ label { /* Etiquetas */
 }
 
 input, select, button { /* Campos de entrada, selección y botón */
-    padding: 0.8rem;
-    font-size: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    outline: none;
+    padding: 0.8rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    border: 1px solid var(--border-color); /* Borde suave */
+    border-radius: 4px; /* Bordes redondeados */
+    outline: none; /* Sin contorno */
 }
 
 input:focus, select:focus { /* Campos de entrada y selección al enfocar */
@@ -150,12 +139,32 @@ button#logout {
     font-size: 1rem; /* Tamaño de fuente */
     border-radius: 4px; /* Bordes redondeados */
     transition: background-color 0.3s ease; /* Transición suave */
-    width: 20%; /* Botón ocupa todo el ancho */
+    width: 100%; /* Botón ocupa todo el ancho */
+    max-width: 56%; /* Ancho máximo del botón */
 }
 
 button#logout:hover {
     background-color: var(--button-hover-color); /* Azul más oscuro al pasar el ratón */
 }
+
+/* Estilo del botón de "Atrás" */
+button#back {
+    background-color: var(--primary-color); /* Azul corporativo */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    padding: 0.8rem 1.5rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    border-radius: 4px; /* Bordes redondeados */
+    transition: background-color 0.3s ease; /* Transición suave */
+    width: 100%; /* Botón ocupa todo el ancho */
+    max-width: 56%; /* Ancho máximo del botón */
+}
+
+button#back:hover {
+    background-color: var(--button-hover-color); /* Azul más oscuro al pasar el ratón */
+}
+
 
 .warning-box {
     position: fixed; /* Superpone el mensaje sobre la interfaz */
